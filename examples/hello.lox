@@ -1,0 +1,4 @@
+var name = "max";
+
+// Prints name
+print name
