@@ -1,0 +1,22 @@
+shell: bash
+
+commands:
+  bin: mkdir -p bin/lox
+
+  build-tool:
+    depends: [bin]
+    cmd: javac -d bin/lox src/main/java/dev/mkind/tool/*.java
+
+  generate-ast:
+    depends: [build-tool]
+    cmd: java -cp bin/lox dev.mkind.tool.GenerateAst src/main/java/dev/mkind/lox
+
+  build:
+    depends: [generate-ast]
+    cmd: javac -d bin/lox src/main/java/dev/mkind/lox/*.java
+
+  lox:
+    depends: [build]
+    cmd: java -cp bin/lox dev.mkind.lox.Lox
+
+  clean: rm -rf bin
