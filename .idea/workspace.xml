@@ -5,12 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f3c17326-5922-4836-8233-b450c956a8ff" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Readme.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/dev/mkind/lox/ScannerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Parser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/dev/mkind/lox/AstPrinterTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lets.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/lets.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Token.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Token.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Lox.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Lox.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +19,21 @@
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
     </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -52,7 +65,7 @@
     "android.gradle.sync.needed": "true",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "main",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
@@ -67,7 +80,7 @@
       <recent name="dev.mkind.lox" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.ScannerTest.testScannerWorks">
+  <component name="RunManager" selected="Gradle.AstPrinterTest.testAstPrinterWorks">
     <configuration name="Lox file" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="dev.mkind.lox.Lox" />
       <module name="lox-java.main" />
@@ -94,6 +107,30 @@
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
+    </configuration>
+    <configuration name="AstPrinterTest.testAstPrinterWorks" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;dev.mkind.lox.AstPrinterTest.testAstPrinterWorks&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
     </configuration>
     <configuration name="ScannerTest.testScannerWorks" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
@@ -122,10 +159,12 @@
     <list>
       <item itemvalue="Application.Lox file" />
       <item itemvalue="Application.Lox" />
+      <item itemvalue="Gradle.AstPrinterTest.testAstPrinterWorks" />
       <item itemvalue="Gradle.ScannerTest.testScannerWorks" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.AstPrinterTest.testAstPrinterWorks" />
         <item itemvalue="Gradle.ScannerTest.testScannerWorks" />
         <item itemvalue="Application.Lox" />
       </list>
