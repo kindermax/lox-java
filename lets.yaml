@@ -20,3 +20,5 @@ commands:
     cmd: java -cp bin/lox dev.mkind.lox.Lox
 
   clean: rm -rf bin
+
+  test: ./gradlew test
