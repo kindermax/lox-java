@@ -67,12 +67,8 @@ public class Parser {
         return previous();
     }
 
-    private void consume(TokenType type, String message) {
-        while (check(type)) advance();
-
-        if (previous().type == RIGHT_BRACE) {
-            return;
-        }
+    private Token consume(TokenType type, String message) {
+        if (check(type)) return advance();
 
         throw error(peek(), message);
     }
@@ -179,7 +175,6 @@ public class Parser {
             consume(RIGHT_PAREN, "Expect ')' after expression.");
             return new Expr.Grouping(expr);
         }
-
         throw error(peek(), "Expect expression.");
     }
 
