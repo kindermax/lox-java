@@ -8,13 +8,11 @@ class InterpreterTest {
 
     @Test
     void testInterpreterWorks() {
-        var scanner = new Scanner("(1 + 1) > 1");
+        var scanner = new Scanner("print 1;");
         var parser = new Parser(scanner.scanTokens());
-        var expr = parser.parse();
+        var stmts = parser.parse();
         var interpreter = new Interpreter();
 
-        var result = interpreter.evaluate(expr);
-
-        assertTrue((boolean) result);
+        interpreter.interpret(stmts);
     }
 }

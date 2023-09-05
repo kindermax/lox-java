@@ -6,11 +6,20 @@
   <component name="ChangeListManager">
     <list default="true" id="f3c17326-5922-4836-8233-b450c956a8ff" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Interpreter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Interpreter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Lox.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Lox.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Parser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/mkind/tool/GenerateAst.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/mkind/tool/GenerateAst.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+    </option>
   </component>
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
@@ -77,7 +86,7 @@
       <recent name="dev.mkind.lox" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.AstPrinterTest.testAstPrinterWorks">
+  <component name="RunManager" selected="Gradle.InterpreterTest.testInterpreterWorks">
     <configuration name="Lox file" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="dev.mkind.lox.Lox" />
       <module name="lox-java.main" />
@@ -129,6 +138,30 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
+    <configuration name="InterpreterTest.testInterpreterWorks" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;dev.mkind.lox.InterpreterTest.testInterpreterWorks&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
     <configuration name="ScannerTest.testScannerWorks" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -156,11 +189,13 @@
     <list>
       <item itemvalue="Application.Lox file" />
       <item itemvalue="Application.Lox" />
+      <item itemvalue="Gradle.InterpreterTest.testInterpreterWorks" />
       <item itemvalue="Gradle.AstPrinterTest.testAstPrinterWorks" />
       <item itemvalue="Gradle.ScannerTest.testScannerWorks" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.InterpreterTest.testInterpreterWorks" />
         <item itemvalue="Gradle.AstPrinterTest.testAstPrinterWorks" />
         <item itemvalue="Gradle.ScannerTest.testScannerWorks" />
         <item itemvalue="Application.Lox" />
