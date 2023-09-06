@@ -12,7 +12,10 @@ class ParseError extends RuntimeException {
 /**
  * Lox grammar:
  *
- * program        → statement* EOF ;
+ * program        → declaration* EOF ;
+ * declaration    → varDecl
+ *                | statement ;
+ * varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
  * statement      → exprStmt
  *                | printStmt ;
  * exprStmt       → expression ";" ;
@@ -24,8 +27,10 @@ class ParseError extends RuntimeException {
  * factor         → unary ( ( "/" | "*" ) unary )* ;
  * unary          → ( "!" | "-" ) unary
  *                | primary ;
- * primary        → NUMBER | STRING | "true" | "false" | "nil"
- *                | "(" expression ")" ;
+ * primary        → "true" | "false" | "nil"
+ *                | NUMBER | STRING
+ *                | "(" expression ")"
+ *                | IDENTIFIER;
  */
 public class Parser {
     private final List<Token> tokens;
@@ -75,6 +80,9 @@ public class Parser {
         return previous();
     }
 
+    /**
+     * Consume and return token of specified type or report an error
+     */
     private Token consume(TokenType type, String message) {
         if (check(type)) return advance();
 
@@ -112,6 +120,30 @@ public class Parser {
         if (match(PRINT)) return printStatement();
 
         return expressionStatement();
+    }
+
+    private Stmt declaration() {
+        try {
+            if (match(VAR)) return varDeclaration();
+
+            return statement();
+        } catch (ParseError error) {
+            synchronize();
+            return null;
+        }
+    }
+
+    private Stmt varDeclaration() {
+        var name = consume(IDENTIFIER, "Expected variable name");
+
+        Expr initializer = null;
+        if (match(EQUAL)) {
+            initializer = expression();
+        }
+
+        consume(SEMICOLON, "Expect ';' after variable declaration.");
+
+        return new Stmt.Var(name, initializer);
     }
 
     private Stmt printStatement() {
@@ -196,6 +228,10 @@ public class Parser {
             return new Expr.Literal(previous().literal);
         }
 
+        if (match(IDENTIFIER)) {
+            return new Expr.Variable(previous());
+        }
+
         if (match(LEFT_PAREN)) {
             var expr = expression();
             consume(RIGHT_PAREN, "Expect ')' after expression.");
@@ -207,7 +243,7 @@ public class Parser {
     List<Stmt> parse() {
         List<Stmt> statements = new ArrayList<>();
         while (!isAtEnd()) {
-            statements.add(statement());
+            statements.add(declaration());
         }
 
         return statements;

@@ -5,11 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f3c17326-5922-4836-8233-b450c956a8ff" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Environment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/AstPrinter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/AstPrinter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Expr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Expr.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Interpreter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Interpreter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Lox.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Lox.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Parser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Stmt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/mkind/lox/Stmt.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dev/mkind/tool/GenerateAst.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/mkind/tool/GenerateAst.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/dev/mkind/lox/InterpreterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dev/mkind/lox/InterpreterTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,8 +48,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="JUnit5 Test Class" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -86,7 +90,7 @@
       <recent name="dev.mkind.lox" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.InterpreterTest.testInterpreterWorks">
+  <component name="RunManager" selected="Gradle.InterpreterTest">
     <configuration name="Lox file" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="dev.mkind.lox.Lox" />
       <module name="lox-java.main" />
@@ -128,6 +132,30 @@
             <option value=":test" />
             <option value="--tests" />
             <option value="&quot;dev.mkind.lox.AstPrinterTest.testAstPrinterWorks&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="InterpreterTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;dev.mkind.lox.InterpreterTest&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -189,12 +217,14 @@
     <list>
       <item itemvalue="Application.Lox file" />
       <item itemvalue="Application.Lox" />
+      <item itemvalue="Gradle.InterpreterTest" />
       <item itemvalue="Gradle.InterpreterTest.testInterpreterWorks" />
       <item itemvalue="Gradle.AstPrinterTest.testAstPrinterWorks" />
       <item itemvalue="Gradle.ScannerTest.testScannerWorks" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.InterpreterTest" />
         <item itemvalue="Gradle.InterpreterTest.testInterpreterWorks" />
         <item itemvalue="Gradle.AstPrinterTest.testAstPrinterWorks" />
         <item itemvalue="Gradle.ScannerTest.testScannerWorks" />
