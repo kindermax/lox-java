@@ -29,6 +29,10 @@ class InterpreterTest {
             var a = 1;
             var b = 2;
             b = 3;
+            {
+                var a = 5;
+                print a;
+            }
             print a + b;
         """);
         var parser = new Parser(scanner.scanTokens());
@@ -36,6 +40,6 @@ class InterpreterTest {
         var interpreter = new Interpreter();
 
         interpreter.interpret(stmts);
-        assertEquals("4", outContent.toString().trim());
+        assertEquals("5\n4\n", outContent.toString());
     }
 }
