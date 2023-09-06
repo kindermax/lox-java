@@ -20,7 +20,9 @@ class ParseError extends RuntimeException {
  *                | printStmt ;
  * exprStmt       → expression ";" ;
  * printStmt      → "print" expression ";" ;
- * expression     → equality ;
+ * expression     → assignment ;
+ * assignment     → IDENTIFIER "=" assignment
+ *                | equality ;
  * equality       → comparison ( ( "!=" | "==" ) comparison )* ;
  * comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
  * term           → factor ( ( "-" | "+" ) factor )* ;
@@ -159,7 +161,24 @@ public class Parser {
     }
 
     private Expr expression() {
-        return equality();
+        return assignment();
+    }
+
+    private Expr assignment() {
+        var expr = equality();
+
+        if (match(EQUAL)) {
+            var equals = previous();
+            var value = assignment();
+
+            if (expr instanceof Expr.Variable variable) {
+                return new Expr.Assign(variable.name, value);
+            }
+
+            error(equals, "Invalid assignment target.");
+        }
+
+        return expr;
     }
 
     private Expr equality() {
