@@ -28,11 +28,6 @@ class InterpreterTest {
         var scanner = new Scanner("""
             var a = 1;
             var b = 2;
-            b = 3;
-            {
-                var a = 5;
-                print a;
-            }
             print a + b;
         """);
         var parser = new Parser(scanner.scanTokens());
@@ -40,6 +35,38 @@ class InterpreterTest {
         var interpreter = new Interpreter();
 
         interpreter.interpret(stmts);
-        assertEquals("5\n4\n", outContent.toString());
+        assertEquals("3\n", outContent.toString());
+    }
+
+    @Test
+    void testScopingWorks() {
+        var scanner = new Scanner("""
+            var a = 1;
+            {
+                var a = 5;
+                print a;
+            }
+            print a;
+        """);
+        var parser = new Parser(scanner.scanTokens());
+        var stmts = parser.parse();
+        var interpreter = new Interpreter();
+
+        interpreter.interpret(stmts);
+        assertEquals("5\n1\n", outContent.toString());
+    }
+
+    @Test
+    void testIfConditionWorks() {
+        var scanner = new Scanner("""
+            if (1 + 1 == 2)
+                print "two";
+        """);
+        var parser = new Parser(scanner.scanTokens());
+        var stmts = parser.parse();
+        var interpreter = new Interpreter();
+
+        interpreter.interpret(stmts);
+        assertEquals("two\n", outContent.toString());
     }
 }
