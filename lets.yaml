@@ -17,8 +17,9 @@ commands:
 
   lox:
     depends: [build]
-    cmd: java -cp bin/lox dev.mkind.lox.Lox
+    cmd: ["java", "-cp", "bin/lox", "dev.mkind.lox.Lox"]
 
   clean: rm -rf bin
 
-  test: ./gradlew test
+  test: 
+    cmd: ["./gradlew", "test"]

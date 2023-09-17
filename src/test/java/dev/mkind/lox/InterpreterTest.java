@@ -83,4 +83,36 @@ class InterpreterTest {
         interpreter.interpret(stmts);
         assertEquals("hi\nyes\n", outContent.toString());
     }
+
+    @Test
+    void testWhileStatementWorks() {
+        var scanner = new Scanner("""
+                    var i = 0;
+                    while (i < 1) {
+                        print "hi";
+                        i = i + 1;
+                    }
+                """);
+        var parser = new Parser(scanner.scanTokens());
+        var stmts = parser.parse();
+        var interpreter = new Interpreter();
+
+        interpreter.interpret(stmts);
+        assertEquals("hi\n", outContent.toString());
+    }
+
+    @Test
+    void testForStatementWorks() {
+        var scanner = new Scanner("""
+                    for (var i = 0; i < 1; i = i + 1) {
+                        print "hi";
+                    }
+                """);
+        var parser = new Parser(scanner.scanTokens());
+        var stmts = parser.parse();
+        var interpreter = new Interpreter();
+
+        interpreter.interpret(stmts);
+        assertEquals("hi\n", outContent.toString());
+    }
 }

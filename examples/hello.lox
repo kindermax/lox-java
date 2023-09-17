@@ -1,4 +1,10 @@
 var name = "max";
 
 // Prints name
-print name
+print name;
+
+var i = 0;
+while (i < 1) {
+  print "hi";
+  i = i + 1;
+}
