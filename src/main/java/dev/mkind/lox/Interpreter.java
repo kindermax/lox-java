@@ -119,6 +119,21 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Object visitLogicalExpr(Expr.Logical expr) {
+        var left = evaluate(expr.left);
+
+        if (expr.operator.type == TokenType.OR) {
+            if (isTruthy(left))
+                return left;
+        } else {
+            if (!isTruthy(left))
+                return left;
+        }
+
+        return evaluate(expr.right);
+    }
+
+    @Override
     public Object visitUnaryExpr(Expr.Unary expr) {
         Object right = evaluate(expr.right);
 
@@ -146,33 +161,40 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     private boolean isTruthy(Object object) {
-        if (object == null) return false;
-        if (object instanceof Boolean boolValue) return boolValue;
+        if (object == null)
+            return false;
+        if (object instanceof Boolean boolValue)
+            return boolValue;
 
         return true;
     }
 
     private boolean isEqual(Object a, Object b) {
-        if (a == null && b == null) return true;
-        if (a == null) return false;
+        if (a == null && b == null)
+            return true;
+        if (a == null)
+            return false;
 
         return a.equals(b);
     }
 
     private void checkNumberOperand(Token operator, Object operand) {
-        if (operand instanceof Double) return;
+        if (operand instanceof Double)
+            return;
         throw new RuntimeError(operator, "Operand must be a number.");
     }
 
     private void checkNumberOperands(Token operator,
-                                     Object left, Object right) {
-        if (left instanceof Double && right instanceof Double) return;
+            Object left, Object right) {
+        if (left instanceof Double && right instanceof Double)
+            return;
 
         throw new RuntimeError(operator, "Operands must be numbers.");
     }
 
     private String stringify(Object object) {
-        if (object == null) return "nil";
+        if (object == null)
+            return "nil";
 
         if (object instanceof Double) {
             String text = object.toString();

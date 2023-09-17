@@ -5,39 +5,40 @@ import java.util.List;
 
 import static dev.mkind.lox.TokenType.*;
 
-
 class ParseError extends RuntimeException {
 };
 
 /**
  * Lox grammar:
  *
- * program        → declaration* EOF ;
- * declaration    → varDecl
- *                | statement ;
- * varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
- * statement      → exprStmt
- *                | ifStmt
- *                | printStmt
- *                | block ;
- * ifStmt         → "if" "(" expression ")" statement
- *                ( "else" statement )? ;
- * block          → "{" declaration* "}" ;
- * exprStmt       → expression ";" ;
- * printStmt      → "print" expression ";" ;
- * expression     → assignment ;
- * assignment     → IDENTIFIER "=" assignment
- *                | equality ;
- * equality       → comparison ( ( "!=" | "==" ) comparison )* ;
- * comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
- * term           → factor ( ( "-" | "+" ) factor )* ;
- * factor         → unary ( ( "/" | "*" ) unary )* ;
- * unary          → ( "!" | "-" ) unary
- *                | primary ;
- * primary        → "true" | "false" | "nil"
- *                | NUMBER | STRING
- *                | "(" expression ")"
- *                | IDENTIFIER;
+ * program → declaration* EOF ;
+ * declaration → varDecl
+ * | statement ;
+ * varDecl → "var" IDENTIFIER ( "=" expression )? ";" ;
+ * statement → exprStmt
+ * | ifStmt
+ * | printStmt
+ * | block ;
+ * ifStmt → "if" "(" expression ")" statement
+ * ( "else" statement )? ;
+ * block → "{" declaration* "}" ;
+ * exprStmt → expression ";" ;
+ * printStmt → "print" expression ";" ;
+ * expression → assignment ;
+ * assignment → IDENTIFIER "=" assignment
+ * | logic_or;
+ * logic_or → logic_and ( "or" logic_and )*;
+ * logic_and → equality ( "and" equality )* ;
+ * equality → comparison ( ( "!=" | "==" ) comparison )* ;
+ * comparison → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
+ * term → factor ( ( "-" | "+" ) factor )* ;
+ * factor → unary ( ( "/" | "*" ) unary )* ;
+ * unary → ( "!" | "-" ) unary
+ * | primary ;
+ * primary → "true" | "false" | "nil"
+ * | NUMBER | STRING
+ * | "(" expression ")"
+ * | IDENTIFIER;
  */
 public class Parser {
     private final List<Token> tokens;
@@ -59,7 +60,8 @@ public class Parser {
     }
 
     private boolean check(TokenType type) {
-        if (isAtEnd()) return false;
+        if (isAtEnd())
+            return false;
 
         return peek().type == type;
     }
@@ -83,7 +85,8 @@ public class Parser {
     }
 
     private Token advance() {
-        if (!isAtEnd()) current++;
+        if (!isAtEnd())
+            current++;
         return previous();
     }
 
@@ -91,7 +94,8 @@ public class Parser {
      * Consume and return token of specified type or report an error
      */
     private Token consume(TokenType type, String message) {
-        if (check(type)) return advance();
+        if (check(type))
+            return advance();
 
         throw error(peek(), message);
     }
@@ -105,7 +109,8 @@ public class Parser {
         advance();
 
         while (!isAtEnd()) {
-            if (previous().type == SEMICOLON) return;
+            if (previous().type == SEMICOLON)
+                return;
 
             switch (peek().type) {
                 case CLASS:
@@ -124,10 +129,13 @@ public class Parser {
     }
 
     private Stmt statement() {
-        if (match(IF)) return ifStatement();
-        if (match(PRINT)) return printStatement();
+        if (match(IF))
+            return ifStatement();
+        if (match(PRINT))
+            return printStatement();
 
-        if (match(LEFT_BRACE)) return new Stmt.Block(block());
+        if (match(LEFT_BRACE))
+            return new Stmt.Block(block());
 
         return expressionStatement();
     }
@@ -160,7 +168,8 @@ public class Parser {
 
     private Stmt declaration() {
         try {
-            if (match(VAR)) return varDeclaration();
+            if (match(VAR))
+                return varDeclaration();
 
             return statement();
         } catch (ParseError error) {
@@ -199,7 +208,7 @@ public class Parser {
     }
 
     private Expr assignment() {
-        var expr = equality();
+        var expr = or();
 
         if (match(EQUAL)) {
             var equals = previous();
@@ -210,6 +219,30 @@ public class Parser {
             }
 
             error(equals, "Invalid assignment target.");
+        }
+
+        return expr;
+    }
+
+    private Expr or() {
+        var expr = and();
+
+        while (match(OR)) {
+            var operator = previous();
+            var right = and();
+            expr = new Expr.Logical(expr, operator, right);
+        }
+
+        return expr;
+    }
+
+    private Expr and() {
+        var expr = equality();
+
+        while (match(AND)) {
+            var operator = previous();
+            var right = equality();
+            expr = new Expr.Logical(expr, operator, right);
         }
 
         return expr;
@@ -273,9 +306,12 @@ public class Parser {
     }
 
     private Expr primary() {
-        if (match(FALSE)) return new Expr.Literal(false);
-        if (match(TRUE)) return new Expr.Literal(true);
-        if (match(NIL)) return new Expr.Literal(null);
+        if (match(FALSE))
+            return new Expr.Literal(false);
+        if (match(TRUE))
+            return new Expr.Literal(true);
+        if (match(NIL))
+            return new Expr.Literal(null);
 
         if (match(NUMBER, STRING)) {
             return new Expr.Literal(previous().literal);

@@ -26,10 +26,10 @@ class InterpreterTest {
     @Test
     void testInterpreterWorks() {
         var scanner = new Scanner("""
-            var a = 1;
-            var b = 2;
-            print a + b;
-        """);
+                    var a = 1;
+                    var b = 2;
+                    print a + b;
+                """);
         var parser = new Parser(scanner.scanTokens());
         var stmts = parser.parse();
         var interpreter = new Interpreter();
@@ -41,13 +41,13 @@ class InterpreterTest {
     @Test
     void testScopingWorks() {
         var scanner = new Scanner("""
-            var a = 1;
-            {
-                var a = 5;
-                print a;
-            }
-            print a;
-        """);
+                    var a = 1;
+                    {
+                        var a = 5;
+                        print a;
+                    }
+                    print a;
+                """);
         var parser = new Parser(scanner.scanTokens());
         var stmts = parser.parse();
         var interpreter = new Interpreter();
@@ -59,14 +59,28 @@ class InterpreterTest {
     @Test
     void testIfConditionWorks() {
         var scanner = new Scanner("""
-            if (1 + 1 == 2)
-                print "two";
-        """);
+                    if (1 + 1 == 2)
+                        print "two";
+                """);
         var parser = new Parser(scanner.scanTokens());
         var stmts = parser.parse();
         var interpreter = new Interpreter();
 
         interpreter.interpret(stmts);
         assertEquals("two\n", outContent.toString());
+    }
+
+    @Test
+    void testIfConditionWithOperatorsWorks() {
+        var scanner = new Scanner("""
+                    print "hi" or 2;
+                    print nil or "yes";
+                """);
+        var parser = new Parser(scanner.scanTokens());
+        var stmts = parser.parse();
+        var interpreter = new Interpreter();
+
+        interpreter.interpret(stmts);
+        assertEquals("hi\nyes\n", outContent.toString());
     }
 }

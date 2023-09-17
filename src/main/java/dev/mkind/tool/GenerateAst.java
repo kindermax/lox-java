@@ -17,18 +17,17 @@ public class GenerateAst {
                 "Binary   : Expr left, Token operator, Expr right",
                 "Grouping : Expr expression",
                 "Literal  : Object value",
+                "Logical  : Expr left, Token operator, Expr right",
                 "Unary    : Token operator, Expr right",
-                "Variable : Token name"
-        ));
+                "Variable : Token name"));
 
         defineAst(outputDir, "Stmt", Arrays.asList(
                 "Block      : List<Stmt> statements",
                 "Expression : Expr expression",
                 "If         : Expr condition, Stmt theBranch," +
-                            " Stmt elseBranch",
+                        " Stmt elseBranch",
                 "Print      : Expr expression",
-                "Var        : Token name, Expr initializer"
-        ));
+                "Var        : Token name, Expr initializer"));
     }
 
     private static void defineAst(String outputDir, String baseName, List<String> types) throws IOException {
@@ -94,7 +93,8 @@ public class GenerateAst {
 
         for (String type : types) {
             String typeName = type.split(":")[0].trim();
-            writer.println(String.format("    R visit%s%s(%s %s);", typeName, baseName, typeName, baseName.toLowerCase()));
+            writer.println(
+                    String.format("    R visit%s%s(%s %s);", typeName, baseName, typeName, baseName.toLowerCase()));
         }
 
         writer.println("  }");
