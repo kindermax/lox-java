@@ -41,13 +41,13 @@ class InterpreterTest {
     @Test
     void testScopingWorks() {
         var scanner = new Scanner("""
-                    var a = 1;
-                    {
-                    var a = 5;
-                    print a;
-                    }
-                    print a;
-                """);
+                        var a = 1;
+                        {
+                var a = 5;
+                print a;
+                        }
+                        print a;
+                    """);
         var parser = new Parser(scanner.scanTokens());
         var stmts = parser.parse();
         var interpreter = new Interpreter();
@@ -87,12 +87,12 @@ class InterpreterTest {
     @Test
     void testWhileStatementWorks() {
         var scanner = new Scanner("""
-                var i = 0;
-                while (i < 1) {
-                    print "hi";
-                    i = i + 1;
-                }
-                """);
+                    var i = 0;
+                    while (i < 1) {
+                print "hi";
+                i = i + 1;
+                    }
+                    """);
         var parser = new Parser(scanner.scanTokens());
         var stmts = parser.parse();
         var interpreter = new Interpreter();
@@ -104,10 +104,10 @@ class InterpreterTest {
     @Test
     void testForStatementWorks() {
         var scanner = new Scanner("""
-                for (var i = 0; i < 1; i = i + 1) {
-                    print "hi";
-                }
-                """);
+                    for (var i = 0; i < 1; i = i + 1) {
+                print "hi";
+                    }
+                    """);
         var parser = new Parser(scanner.scanTokens());
         var stmts = parser.parse();
         var interpreter = new Interpreter();
@@ -119,11 +119,11 @@ class InterpreterTest {
     @Test
     void testFunctionStmtExecutionWorks() {
         var scanner = new Scanner("""
-                fun hi() {
-                    print "hi";
-                }
-                hi();
-                """);
+                    fun hi() {
+                print "hi";
+                    }
+                    hi();
+                    """);
         var parser = new Parser(scanner.scanTokens());
         var stmts = parser.parse();
         var interpreter = new Interpreter();
@@ -135,16 +135,41 @@ class InterpreterTest {
     @Test
     void testFunctionStmtReturnWorks() {
         var scanner = new Scanner("""
-                fun hi(name) {
-                    return "hi " + name;
-                }
-                print hi("Max");
-                """);
+                    fun hi(name) {
+                return "hi " + name;
+                    }
+                    print hi("Max");
+                    """);
         var parser = new Parser(scanner.scanTokens());
         var stmts = parser.parse();
         var interpreter = new Interpreter();
 
         interpreter.interpret(stmts);
         assertEquals("hi Max\n", outContent.toString());
+    }
+
+    @Test
+    void testClosuresWorks() {
+        var scanner = new Scanner("""
+                fun makeCounter() {
+                var i = 0;
+                fun count() {
+                    i = i + 1;
+                    print i;
+                }
+
+                return count;
+                }
+
+                var counter = makeCounter();
+                counter(); // "1".
+                counter(); // "2".
+                    """);
+        var parser = new Parser(scanner.scanTokens());
+        var stmts = parser.parse();
+        var interpreter = new Interpreter();
+
+        interpreter.interpret(stmts);
+        assertEquals("1\n2\n", outContent.toString());
     }
 }
