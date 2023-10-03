@@ -1,70 +1,98 @@
 package dev.mkind.lox;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
-    private Environment environment = new Environment();
+  final Environment globals = new Environment();
+  private Environment environment = globals;
 
-    @Override
-    public Void visitBlockStmt(Stmt.Block stmt) {
-        executeBlock(stmt.statements, new Environment(environment));
-        return null;
+  Interpreter() {
+    globals.define("clock", new LoxCallable() {
+      @Override
+      public int arity() {
+        return 0;
+      }
+
+      @Override
+      public Object call(Interpreter interpreter, List<Object> arguments) {
+        return (double)System.currentTimeMillis() / 1000.0;
+      }
+
+      @Override
+      public String toString() {
+        return "<native fn>";
+      }
+    });
+  }
+
+  @Override
+  public Void visitFunctionStmt(Stmt.Function stmt) {
+    var function = new LoxFunction(stmt);
+    environment.define(stmt.name.lexeme, function);
+    return null;
+  }
+
+  @Override
+  public Void visitBlockStmt(Stmt.Block stmt) {
+    executeBlock(stmt.statements, new Environment(environment));
+    return null;
+  }
+
+  @Override
+  public Void visitExpressionStmt(Stmt.Expression stmt) {
+    evaluate(stmt.expression);
+    return null;
+  }
+
+  @Override
+  public Void visitIfStmt(Stmt.If stmt) {
+    if (isTruthy(evaluate(stmt.condition))) {
+      execute(stmt.theBranch);
+    } else if (stmt.elseBranch != null) {
+      execute(stmt.elseBranch);
     }
+    return null;
+  }
 
-    @Override
-    public Void visitExpressionStmt(Stmt.Expression stmt) {
-        evaluate(stmt.expression);
-        return null;
+  @Override
+  public Void visitPrintStmt(Stmt.Print stmt) {
+    Object value = evaluate(stmt.expression);
+    System.out.println(stringify(value));
+    return null;
+  }
+
+  @Override
+  public Void visitWhileStmt(Stmt.While stmt) {
+    while (isTruthy(evaluate(stmt.condition))) {
+      execute(stmt.body);
     }
+    return null;
+  }
 
-    @Override
-    public Void visitIfStmt(Stmt.If stmt) {
-        if (isTruthy(evaluate(stmt.condition))) {
-            execute(stmt.theBranch);
-        } else if (stmt.elseBranch != null) {
-            execute(stmt.elseBranch);
-        }
-        return null;
+  @Override
+  public Void visitVarStmt(Stmt.Var stmt) {
+    Object value = null;
+    if (stmt.initializer != null) {
+      value = evaluate(stmt.initializer);
     }
+    environment.define(stmt.name.lexeme, value);
+    return null;
+  }
 
-    @Override
-    public Void visitPrintStmt(Stmt.Print stmt) {
-        Object value = evaluate(stmt.expression);
-        System.out.println(stringify(value));
-        return null;
-    }
+  @Override
+  public Object visitAssignExpr(Expr.Assign expr) {
+    Object value = evaluate(expr.value);
+    environment.assign(expr.name, value);
+    return value;
+  }
 
-    @Override
-    public Void visitWhileStmt(Stmt.While stmt) {
-        while (isTruthy(evaluate(stmt.condition))) {
-            execute(stmt.body);
-        }
-        return null;
-    }
+  @Override
+  public Object visitBinaryExpr(Expr.Binary expr) {
+    Object left = evaluate(expr.left);
+    Object right = evaluate(expr.right);
 
-    @Override
-    public Void visitVarStmt(Stmt.Var stmt) {
-        Object value = null;
-        if (stmt.initializer != null) {
-            value = evaluate(stmt.initializer);
-        }
-        environment.define(stmt.name.lexeme, value);
-        return null;
-    }
-
-    @Override
-    public Object visitAssignExpr(Expr.Assign expr) {
-        Object value = evaluate(expr.value);
-        environment.assign(expr.name, value);
-        return value;
-    }
-
-    @Override
-    public Object visitBinaryExpr(Expr.Binary expr) {
-        Object left = evaluate(expr.left);
-        Object right = evaluate(expr.right);
-
-        switch (expr.operator.type) {
+    switch (expr.operator.type) {
             case MINUS -> {
                 checkNumberOperands(expr.operator, left, right);
                 return (double) left + (double) right;
@@ -117,35 +145,61 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
-    public Object visitGroupingExpr(Expr.Grouping expr) {
-        return evaluate(expr.expression);
-    }
+    public Object visitCallExpr(Expr.Call expr) {
+        Object callee = evaluate(expr.callee);
+        var arguments = new ArrayList<Object>();
 
-    @Override
-    public Object visitLiteralExpr(Expr.Literal expr) {
-        return expr.value;
-    }
-
-    @Override
-    public Object visitLogicalExpr(Expr.Logical expr) {
-        var left = evaluate(expr.left);
-
-        if (expr.operator.type == TokenType.OR) {
-            if (isTruthy(left))
-                return left;
-        } else {
-            if (!isTruthy(left))
-                return left;
+        for (var argument : expr.arguments) {
+            arguments.add(evaluate(argument));
         }
 
-        return evaluate(expr.right);
-    }
+              if (!(callee instanceof LoxCallable)) {
+                throw new RuntimeError(expr.paren,
+                                       "Can only call functions and classes.");
+              }
 
-    @Override
-    public Object visitUnaryExpr(Expr.Unary expr) {
-        Object right = evaluate(expr.right);
+              LoxCallable function = (LoxCallable)callee;
 
-        switch (expr.operator.type) {
+              if (arguments.size() != function.arity()) {
+                throw new RuntimeError(expr.paren, "Expected " +
+                                                       function.arity() +
+                                                       " arguments but got " +
+                                                       arguments.size() + ".");
+              }
+
+              return function.call(this, arguments);
+            }
+
+            @Override
+            public Object visitGroupingExpr(Expr.Grouping expr) {
+              return evaluate(expr.expression);
+            }
+
+            @Override
+            public Object visitLiteralExpr(Expr.Literal expr) {
+              return expr.value;
+            }
+
+            @Override
+            public Object visitLogicalExpr(Expr.Logical expr) {
+              var left = evaluate(expr.left);
+
+              if (expr.operator.type == TokenType.OR) {
+                if (isTruthy(left))
+                  return left;
+              } else {
+                if (!isTruthy(left))
+                  return left;
+              }
+
+              return evaluate(expr.right);
+            }
+
+            @Override
+            public Object visitUnaryExpr(Expr.Unary expr) {
+              Object right = evaluate(expr.right);
+
+              switch (expr.operator.type) {
             case MINUS -> {
                 checkNumberOperand(expr.operator, right);
                 return -(double) right;
@@ -219,7 +273,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         statement.accept(this);
     }
 
-    private void executeBlock(List<Stmt> statements, Environment environment) {
+    public void executeBlock(List<Stmt> statements, Environment environment) {
         Environment previous = this.environment;
 
         try {
@@ -227,18 +281,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             for (var statement : statements) {
                 execute(statement);
             }
-        } finally {
-            this.environment = previous;
-        }
-    }
-
-    void interpret(List<Stmt> statements) {
-        try {
-            for (Stmt statememt : statements) {
-                execute(statememt);
             }
-        } catch (RuntimeError error) {
-            Lox.runtimeError(error);
-        }
-    }
-}
+            finally { this.environment = previous; }
+            }
+
+            void interpret(List<Stmt> statements) {
+              try {
+                for (Stmt statememt : statements) {
+                  execute(statememt);
+                }
+              } catch (RuntimeError error) {
+                Lox.runtimeError(error);
+              }
+            }
+  }

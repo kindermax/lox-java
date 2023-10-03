@@ -1,30 +1,29 @@
 package dev.mkind.lox;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.AfterEach;
-
-import java.io.PrintStream;
-import java.io.ByteArrayOutputStream;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 class InterpreterTest {
-    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private final PrintStream originalOut = System.out;
+  private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+  private final PrintStream originalOut = System.out;
 
-    @BeforeEach
-    public void setUpStreams() {
-        System.setOut(new PrintStream(outContent));
-    }
+  @BeforeEach
+  public void setUpStreams() {
+    System.setOut(new PrintStream(outContent));
+  }
 
-    @AfterEach
-    public void restoreStreams() {
-        System.setOut(originalOut);
-    }
+  @AfterEach
+  public void restoreStreams() {
+    System.setOut(originalOut);
+  }
 
-    @Test
-    void testInterpreterWorks() {
+  @Test
+  void testInterpreterWorks() {
         var scanner = new Scanner("""
                     var a = 1;
                     var b = 2;
@@ -36,15 +35,15 @@ class InterpreterTest {
 
         interpreter.interpret(stmts);
         assertEquals("3\n", outContent.toString());
-    }
+  }
 
-    @Test
-    void testScopingWorks() {
+  @Test
+  void testScopingWorks() {
         var scanner = new Scanner("""
                     var a = 1;
                     {
-                        var a = 5;
-                        print a;
+      var a = 5;
+      print a;
                     }
                     print a;
                 """);
@@ -54,10 +53,10 @@ class InterpreterTest {
 
         interpreter.interpret(stmts);
         assertEquals("5\n1\n", outContent.toString());
-    }
+  }
 
-    @Test
-    void testIfConditionWorks() {
+  @Test
+  void testIfConditionWorks() {
         var scanner = new Scanner("""
                     if (1 + 1 == 2)
                         print "two";
@@ -68,10 +67,10 @@ class InterpreterTest {
 
         interpreter.interpret(stmts);
         assertEquals("two\n", outContent.toString());
-    }
+  }
 
-    @Test
-    void testIfConditionWithOperatorsWorks() {
+  @Test
+  void testIfConditionWithOperatorsWorks() {
         var scanner = new Scanner("""
                     print "hi" or 2;
                     print nil or "yes";
@@ -82,15 +81,15 @@ class InterpreterTest {
 
         interpreter.interpret(stmts);
         assertEquals("hi\nyes\n", outContent.toString());
-    }
+  }
 
-    @Test
-    void testWhileStatementWorks() {
+  @Test
+  void testWhileStatementWorks() {
         var scanner = new Scanner("""
                     var i = 0;
                     while (i < 1) {
-                        print "hi";
-                        i = i + 1;
+      print "hi";
+      i = i + 1;
                     }
                 """);
         var parser = new Parser(scanner.scanTokens());
@@ -99,13 +98,13 @@ class InterpreterTest {
 
         interpreter.interpret(stmts);
         assertEquals("hi\n", outContent.toString());
-    }
+  }
 
-    @Test
-    void testForStatementWorks() {
+  @Test
+  void testForStatementWorks() {
         var scanner = new Scanner("""
                     for (var i = 0; i < 1; i = i + 1) {
-                        print "hi";
+      print "hi";
                     }
                 """);
         var parser = new Parser(scanner.scanTokens());
@@ -114,5 +113,21 @@ class InterpreterTest {
 
         interpreter.interpret(stmts);
         assertEquals("hi\n", outContent.toString());
-    }
+  }
+
+  @Test
+  void testFunctionStmtExecutionWorks() {
+        var scanner = new Scanner("""
+                    fun hi() {
+      print "hi";
+                    }
+                    hi();
+                """);
+        var parser = new Parser(scanner.scanTokens());
+        var stmts = parser.parse();
+        var interpreter = new Interpreter();
+
+        interpreter.interpret(stmts);
+        assertEquals("hi\n", outContent.toString());
+  }
 }
