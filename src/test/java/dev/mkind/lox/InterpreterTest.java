@@ -9,6 +9,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+
 class InterpreterTest {
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
@@ -23,36 +24,36 @@ class InterpreterTest {
         System.setOut(originalOut);
     }
 
+    void interpret(String src) {
+        var scanner = new Scanner(src);
+        var parser = new Parser(scanner.scanTokens());
+        var stmts = parser.parse();
+        var interpreter = new Interpreter();
+        Resolver resolver = new Resolver(interpreter);
+        resolver.resolve(stmts);
+        interpreter.interpret(stmts);
+    }
+
     @Test
     void testInterpreterWorks() {
-        var scanner = new Scanner("""
+        interpret("""
                     var a = 1;
                     var b = 2;
                     print a + b;
                 """);
-        var parser = new Parser(scanner.scanTokens());
-        var stmts = parser.parse();
-        var interpreter = new Interpreter();
-
-        interpreter.interpret(stmts);
         assertEquals("3\n", outContent.toString());
     }
 
     @Test
     void testScopingWorks() {
-        var scanner = new Scanner("""
-                        var a = 1;
-                        {
+        interpret("""
+                                var a = 1;
+                                {
                 var a = 5;
                 print a;
-                        }
-                        print a;
-                    """);
-        var parser = new Parser(scanner.scanTokens());
-        var stmts = parser.parse();
-        var interpreter = new Interpreter();
-
-        interpreter.interpret(stmts);
+                                }
+                                print a;
+                            """);
         assertEquals("5\n1\n", outContent.toString());
     }
 
@@ -72,86 +73,61 @@ class InterpreterTest {
 
     @Test
     void testIfConditionWithOperatorsWorks() {
-        var scanner = new Scanner("""
+        interpret("""
                     print "hi" or 2;
                     print nil or "yes";
                 """);
-        var parser = new Parser(scanner.scanTokens());
-        var stmts = parser.parse();
-        var interpreter = new Interpreter();
-
-        interpreter.interpret(stmts);
         assertEquals("hi\nyes\n", outContent.toString());
     }
 
     @Test
     void testWhileStatementWorks() {
-        var scanner = new Scanner("""
-                    var i = 0;
-                    while (i < 1) {
+        interpret("""
+                            var i = 0;
+                            while (i < 1) {
                 print "hi";
                 i = i + 1;
-                    }
-                    """);
-        var parser = new Parser(scanner.scanTokens());
-        var stmts = parser.parse();
-        var interpreter = new Interpreter();
-
-        interpreter.interpret(stmts);
+                            }
+                            """);
         assertEquals("hi\n", outContent.toString());
     }
 
     @Test
     void testForStatementWorks() {
-        var scanner = new Scanner("""
-                    for (var i = 0; i < 1; i = i + 1) {
+        interpret("""
+                            for (var i = 0; i < 1; i = i + 1) {
                 print "hi";
-                    }
-                    """);
-        var parser = new Parser(scanner.scanTokens());
-        var stmts = parser.parse();
-        var interpreter = new Interpreter();
-
-        interpreter.interpret(stmts);
+                            }
+                            """);
         assertEquals("hi\n", outContent.toString());
     }
 
     @Test
     void testFunctionStmtExecutionWorks() {
-        var scanner = new Scanner("""
-                    fun hi() {
+        interpret("""
+                            fun hi() {
                 print "hi";
-                    }
-                    hi();
-                    """);
-        var parser = new Parser(scanner.scanTokens());
-        var stmts = parser.parse();
-        var interpreter = new Interpreter();
-
-        interpreter.interpret(stmts);
+                            }
+                            hi();
+                            """);
         assertEquals("hi\n", outContent.toString());
     }
 
     @Test
     void testFunctionStmtReturnWorks() {
-        var scanner = new Scanner("""
-                    fun hi(name) {
+        interpret("""
+                            fun hi(name) {
                 return "hi " + name;
-                    }
-                    print hi("Max");
-                    """);
-        var parser = new Parser(scanner.scanTokens());
-        var stmts = parser.parse();
-        var interpreter = new Interpreter();
-
-        interpreter.interpret(stmts);
+                            }
+                            print hi("Max");
+                            """);
         assertEquals("hi Max\n", outContent.toString());
     }
 
     @Test
     void testClosuresWorks() {
-        var scanner = new Scanner("""
-                fun makeCounter() {
+        interpret("""
+                        fun makeCounter() {
                 var i = 0;
                 fun count() {
                     i = i + 1;
@@ -159,17 +135,29 @@ class InterpreterTest {
                 }
 
                 return count;
+                        }
+
+                        var counter = makeCounter();
+                        counter(); // "1".
+                        counter(); // "2".
+                            """);
+        assertEquals("1\n2\n", outContent.toString());
+    }
+
+    @Test
+    void testClosuresScopeImmutableWorks() {
+        interpret("""
+                        var a = "hi";
+                        {
+                fun greet() {
+                    print a;
                 }
 
-                var counter = makeCounter();
-                counter(); // "1".
-                counter(); // "2".
-                    """);
-        var parser = new Parser(scanner.scanTokens());
-        var stmts = parser.parse();
-        var interpreter = new Interpreter();
-
-        interpreter.interpret(stmts);
-        assertEquals("1\n2\n", outContent.toString());
+                greet();
+                var a = "hello";
+                greet();
+                        }
+                            """);
+        assertEquals("hi\nhi\n", outContent.toString());
     }
 }
